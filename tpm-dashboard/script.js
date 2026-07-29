@@ -111,12 +111,6 @@ function renderSummary(program) {
     createList(technicalScope, program.summary.technicalScope);
     createList(expectedOutcomes, program.summary.expectedOutcomes);
 }
-
-// ---------------------------------------------------------------
-// Architecture — grouped into Frontend / Services / Data lanes,
-// with a visual connector between each lane to show request flow.
-// ---------------------------------------------------------------
-
 const LANES = [
     { type: "frontend", label: "Frontend" },
     { type: "service", label: "Services" },
@@ -210,12 +204,6 @@ function renderDependencies(program) {
         criticalPath.appendChild(step);
     });
 }
-
-// ---------------------------------------------------------------
-// Risk Matrix — real probability x impact grid. Risks are plotted
-// into the cell that matches their actual data, not a fake score.
-// ---------------------------------------------------------------
-
 const RISK_LEVELS = ["Low", "Medium", "High"];
 
 function severityFor(probability, impact) {
@@ -316,12 +304,6 @@ function renderRisks(program) {
             : "Low overall technical risk based on current assessment.";
 }
 
-// ---------------------------------------------------------------
-// Program Health — a single composite signal, computed from real
-// data already on screen elsewhere: dependency completion rate
-// and inverse risk severity. Not a separate fabricated number.
-// ---------------------------------------------------------------
-
 function renderProgramHealth(program) {
     const total = program.dependencies.length;
     const complete = program.dependencies.filter(d => d.status === "Complete").length;
@@ -333,14 +315,6 @@ function renderProgramHealth(program) {
 
     programHealth.textContent = `${health}%`;
 }
-
-// ---------------------------------------------------------------
-// Roadmap — proportional timeline. Current phase is inferred by
-// mapping both the program's status and each roadmap phase name
-// onto the same stage vocabulary, then picking the closest match
-// (an exact string match doesn't hold across all 12 programs,
-// since "status" and "roadmap" use different naming conventions).
-// ---------------------------------------------------------------
 
 function phaseRank(name) {
     const n = name.toLowerCase();
@@ -387,10 +361,6 @@ function renderRoadmap(program) {
         timelineContainer.appendChild(step);
     });
 }
-
-// ---------------------------------------------------------------
-// KPIs — no fabricated progress bars. Just the target, cleanly.
-// ---------------------------------------------------------------
 
 function renderKPIs(program) {
     clear(kpiGrid);
