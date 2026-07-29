@@ -81,21 +81,11 @@ ul {
     border-radius: 999px;
 }
 
-
-/* ============================================
-   App shell
-   ============================================ */
-
 .app {
     display: grid;
     grid-template-columns: 272px 1fr;
     min-height: 100vh;
 }
-
-
-/* ============================================
-   Sidebar
-   ============================================ */
 
 .sidebar {
     background:
@@ -239,12 +229,6 @@ ul {
     color: #4b5060;
     line-height: 1.5;
 }
-
-
-/* ============================================
-   Main content
-   ============================================ */
-
 .main-content {
     padding: 40px 48px 70px;
     max-width: 1180px;
@@ -341,9 +325,6 @@ ul {
     font-weight: 600;
 }
 
-
-/* ---------- Tabs ---------- */
-
 .tabs {
     display: flex;
     gap: 4px;
@@ -402,9 +383,6 @@ ul {
 @media (prefers-reduced-motion: reduce) {
     .tab-content { animation: none; }
 }
-
-
-/* ---------- Shared card / grid framing ---------- */
 
 .grid-2 {
     display: grid;
@@ -483,9 +461,6 @@ ul {
     margin: 18px 0 10px;
 }
 
-
-/* ---------- Lists ---------- */
-
 .check-list li {
     position: relative;
     padding: 8px 0 8px 22px;
@@ -524,11 +499,6 @@ ul {
     padding: 6px 12px;
     border-radius: 999px;
 }
-
-
-/* ============================================
-   Architecture — layered lanes + connectors
-   ============================================ */
 
 .architecture-legend {
     display: flex;
@@ -657,11 +627,6 @@ ul {
     }
 }
 
-
-/* ============================================
-   Stakeholders
-   ============================================ */
-
 .stakeholder-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -700,11 +665,6 @@ ul {
     font-size: 13px;
     color: var(--ink-soft);
 }
-
-
-/* ============================================
-   Dependencies
-   ============================================ */
 
 .dependency-item {
     display: flex;
@@ -771,11 +731,6 @@ ul {
     border-radius: 50%;
     background: var(--accent);
 }
-
-
-/* ============================================
-   Risk Matrix
-   ============================================ */
 
 .risk-matrix-wrapper {
     overflow-x: auto;
@@ -856,9 +811,6 @@ ul {
     margin-top: 10px;
 }
 
-
-/* ---------- Risk table ---------- */
-
 .risk-table {
     width: 100%;
     border-collapse: collapse;
@@ -884,9 +836,6 @@ ul {
 .risk-table tr:last-child td {
     border-bottom: none;
 }
-
-
-/* ---------- Severity bar ---------- */
 
 .score-display {
     margin-bottom: 6px;
@@ -926,11 +875,6 @@ ul {
     font-size: 14px;
     color: var(--ink-soft);
 }
-
-
-/* ============================================
-   Roadmap timeline
-   ============================================ */
 
 .timeline-container {
     display: flex;
@@ -1039,11 +983,6 @@ ul {
     margin-top: 16px;
 }
 
-
-/* ============================================
-   KPIs
-   ============================================ */
-
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1098,11 +1037,6 @@ ul {
     font-size: 15px;
     font-weight: 600;
 }
-
-
-/* ============================================
-   Responsive
-   ============================================ */
 
 @media (max-width: 980px) {
 
