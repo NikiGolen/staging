@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Ecommerce Fraud Decisioning | C4 Architecture</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Top toolbar -->
+  <header class="toolbar">
+
+    <div class="toolbar-left">
+      <a href="#" class="back-link">← Portfolio</a>
+
+      <div class="divider"></div>
+
+      <div>
+        <h1>Fraud Decisioning</h1>
+        <span>Hypothetical Ecommerce Architecture</span>
+      </div>
+    </div>
+
+    <div class="toolbar-right">
+      <button class="tool-button" id="zoomOut">−</button>
+      <span id="zoomLevel">100%</span>
+      <button class="tool-button" id="zoomIn">+</button>
+      <button class="tool-button" id="resetView">Reset</button>
+    </div>
+
+  </header>
+
+
+  <!-- Canvas -->
+  <main class="canvas-wrapper" id="canvasWrapper">
+
+    <div class="canvas" id="canvas">
+
+      <!-- Background grid -->
+      <div class="grid"></div>
+
+
+      <!-- Canvas title -->
+      <section class="canvas-title">
+        <span class="eyebrow">C4 ARCHITECTURE</span>
+        <h2>Ecommerce Fraud Decisioning</h2>
+        <p>
+          A hypothetical architecture showing how fraud signals,
+          decisioning, payment, and order systems interact.
+        </p>
+      </section>
+
+
+      <!-- SYSTEM CONTEXT -->
+
+      <div class="section-label context-label">
+        01 · SYSTEM CONTEXT
+      </div>
+
+      <div class="system-boundary context-boundary">
+
+        <div class="boundary-title">
+          Ecommerce Platform
+        </div>
+
+      </div>
+
+
+      <!-- Customer -->
+
+      <article
+        class="node actor"
+        style="left: 120px; top: 280px;"
+        data-title="Customer"
+        data-description="The customer places an order through the ecommerce experience."
+      >
+        <div class="node-icon">👤</div>
+
+        <div>
+          <strong>Customer</strong>
+          <span>External actor</span>
+        </div>
+      </article>
+
+
+      <!-- Ecommerce -->
+
+      <article
+        class="node system"
+        style="left: 400px; top: 280px;"
+        data-title="Ecommerce Platform"
+        data-description="Handles the customer-facing shopping, cart, checkout, and order-placement experience."
+      >
+        <div class="node-icon">◎</div>
+
+        <div>
+          <strong>Ecommerce Platform</strong>
+          <span>Internal system</span>
+        </div>
+      </article>
+
+
+      <!-- Fraud -->
+
+      <article
+        class="node fraud"
+        style="left: 760px; top: 280px;"
+        data-title="Fraud Decisioning"
+        data-description="Evaluates available risk signals and returns an approve, review, or reject decision."
+      >
+        <div class="node-icon">◆</div>
+
+        <div>
+          <strong>Fraud Decisioning</strong>
+          <span>Internal system</span>
+        </div>
+      </article>
+
+
+      <!-- Payment -->
+
+      <article
+        class="node external"
+        style="left: 1080px; top: 170px;"
+        data-title="Payment Provider"
+        data-description="Processes payment authorization and returns an authorization response."
+      >
+        <div class="node-icon">↔</div>
+
+        <div>
+          <strong>Payment Provider</strong>
+          <span>External system</span>
+        </div>
+      </article>
+
+
+      <!-- Order -->
+
+      <article
+        class="node system"
+        style="left: 1080px; top: 380px;"
+        data-title="Order Management"
+        data-description="Receives approved orders and coordinates downstream order processing."
+      >
+        <div class="node-icon">□</div>
+
+        <div>
+          <strong>Order Management</strong>
+          <span>Internal system</span>
+        </div>
+      </article>
+
+
+      <!-- FRAUD SYSTEM DETAIL -->
+
+      <div class="section-label detail-label">
+        02 · FRAUD DECISIONING — CONTAINER VIEW
+      </div>
+
+
+      <div class="system-boundary fraud-boundary">
+
+        <div class="boundary-title">
+          Fraud Decisioning System
+        </div>
+
+
+        <article
+          class="node container-node"
+          style="left: 220px; top: 820px;"
+          data-title="Signal Collection"
+          data-description="Collects and normalizes signals such as device, account, behavioral, payment, and order information."
+        >
+          <strong>Signal Collection</strong>
+          <span>Risk signals</span>
+        </article>
+
+
+        <article
+          class="node container-node"
+          style="left: 560px; top: 820px;"
+          data-title="Risk Scoring Engine"
+          data-description="Combines available signals to calculate a risk score."
+        >
+          <strong>Risk Scoring</strong>
+          <span>Risk model</span>
+        </article>
+
+
+        <article
+          class="node container-node"
+          style="left: 900px; top: 820px;"
+          data-title="Decision Engine"
+          data-description="Applies rules and thresholds to determine whether an order is approved, reviewed, or rejected."
+        >
+          <strong>Decision Engine</strong>
+          <span>Rules + thresholds</span>
+        </article>
+
+
+        <article
+          class="node decision approve"
+          style="left: 760px; top: 1040px;"
+        >
+          <strong>APPROVE</strong>
+          <span>Low risk</span>
+        </article>
+
+
+        <article
+          class="node decision review"
+          style="left: 900px; top: 1040px;"
+        >
+          <strong>REVIEW</strong>
+          <span>Medium risk</span>
+        </article>
+
+
+        <article
+          class="node decision reject"
+          style="left: 1040px; top: 1040px;"
+        >
+          <strong>REJECT</strong>
+          <span>High risk</span>
+        </article>
+
+      </div>
+
+
+      <!-- SIGNAL DETAIL -->
+
+      <div class="section-label signal-label">
+        03 · RISK SIGNALS
+      </div>
+
+
+      <div class="signal-group">
+
+        <article class="signal-card">
+          <strong>Device</strong>
+          <span>Device fingerprint</span>
+        </article>
+
+        <article class="signal-card">
+          <strong>Account</strong>
+          <span>Account history</span>
+        </article>
+
+        <article class="signal-card">
+          <strong>Payment</strong>
+          <span>Payment signals</span>
+        </article>
+
+        <article class="signal-card">
+          <strong>Behavior</strong>
+          <span>Behavioral patterns</span>
+        </article>
+
+        <article class="signal-card">
+          <strong>Order</strong>
+          <span>Order attributes</span>
+        </article>
+
+      </div>
+
+
+      <!-- PRODUCT THINKING -->
+
+      <div class="section-label experiment-label">
+        04 · PRODUCT EXPERIMENT
+      </div>
+
+
+      <article class="note-card experiment-card">
+
+        <div class="note-pin"></div>
+
+        <span class="eyebrow">HYPOTHESIS</span>
+
+        <h3>Device fingerprinting will improve fraud detection</h3>
+
+        <p>
+          Adding device-level signals to fraud decisioning will reduce
+          fraudulent orders without materially reducing legitimate
+          customer conversion.
+        </p>
+
+        <div class="metric-row">
+
+          <div>
+            <span>Fraud loss</span>
+            <strong>↓</strong>
+          </div>
+
+          <div>
+            <span>False positives</span>
+            <strong>↓</strong>
+          </div>
+
+          <div>
+            <span>Conversion</span>
+            <strong>↔</strong>
+          </div>
+
+          <div>
+            <span>Review volume</span>
+            <strong>↓</strong>
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- Info panel -->
+
+      <aside class="info-panel" id="infoPanel">
+
+        <button class="close-panel" id="closePanel">×</button>
+
+        <span class="eyebrow">SYSTEM DETAIL</span>
+
+        <h3 id="panelTitle">Select a node</h3>
+
+        <p id="panelDescription">
+          Click any system or component to learn more.
+        </p>
+
+      </aside>
+
+
+      <!-- SVG CONNECTORS -->
+
+      <svg class="connections" width="1600" height="1500">
+
+        <defs>
+
+          <marker
+            id="arrow"
+            markerWidth="10"
+            markerHeight="10"
+            refX="8"
+            refY="3"
+            orient="auto"
+          >
+            <path d="M0,0 L0,6 L9,3 z"></path>
+          </marker>
+
+        </defs>
+
+        <!-- Context connections -->
+
+        <line
+          x1="270"
+          y1="320"
+          x2="400"
+          y2="320"
+          marker-end="url(#arrow)"
+        />
+
+        <line
+          x1="660"
+          y1="320"
+          x2="760"
+          y2="320"
+          marker-end="url(#arrow)"
+        />
+
+        <line
+          x1="980"
+          y1="300"
+          x2="1080"
+          y2="220"
+          marker-end="url(#arrow)"
+        />
+
+        <line
+          x1="980"
+          y1="340"
+          x2="1080"
+          y2="420"
+          marker-end="url(#arrow)"
+        />
+
+        <!-- Fraud container connections -->
+
+        <line
+          x1="430"
+          y1="860"
+          x2="560"
+          y2="860"
+          marker-end="url(#arrow)"
+        />
+
+        <line
+          x1="770"
+          y1="860"
+          x2="900"
+          y2="860"
+          marker-end="url(#arrow)"
+        />
+
+      </svg>
+
+    </div>
+
+  </main>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
