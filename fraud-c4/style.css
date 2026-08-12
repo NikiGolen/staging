@@ -1,0 +1,582 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #222;
+  overflow: hidden;
+}
+
+body {
+  background: #f7f7f7;
+}
+
+
+/* -------------------------
+   TOOLBAR
+------------------------- */
+
+.toolbar {
+  height: 64px;
+  width: 100%;
+  background: white;
+  border-bottom: 1px solid #ddd;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+
+  position: relative;
+  z-index: 100;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.back-link {
+  text-decoration: none;
+  color: #555;
+  font-size: 14px;
+}
+
+.divider {
+  width: 1px;
+  height: 30px;
+  background: #ddd;
+}
+
+.toolbar h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.toolbar span {
+  font-size: 12px;
+  color: #888;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-button {
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  height: 32px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.tool-button:hover {
+  background: #f4f4f4;
+}
+
+
+/* -------------------------
+   CANVAS
+------------------------- */
+
+.canvas-wrapper {
+  position: absolute;
+  top: 64px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  overflow: hidden;
+
+  cursor: grab;
+}
+
+.canvas-wrapper:active {
+  cursor: grabbing;
+}
+
+.canvas {
+  position: absolute;
+
+  width: 1600px;
+  height: 1500px;
+
+  transform-origin: 0 0;
+}
+
+
+/* Grid */
+
+.grid {
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    radial-gradient(#d7d7d7 1px, transparent 1px);
+
+  background-size: 24px 24px;
+
+  opacity: 0.65;
+}
+
+
+/* -------------------------
+   CANVAS TITLE
+------------------------- */
+
+.canvas-title {
+  position: absolute;
+
+  left: 80px;
+  top: 80px;
+
+  width: 500px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: #777;
+}
+
+.canvas-title h2 {
+  margin: 8px 0;
+  font-size: 32px;
+  letter-spacing: -0.03em;
+}
+
+.canvas-title p {
+  color: #666;
+  line-height: 1.6;
+}
+
+
+/* -------------------------
+   SECTION LABELS
+------------------------- */
+
+.section-label {
+  position: absolute;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  color: #666;
+}
+
+.context-label {
+  left: 80px;
+  top: 220px;
+}
+
+.detail-label {
+  left: 80px;
+  top: 690px;
+}
+
+.signal-label {
+  left: 80px;
+  top: 1160px;
+}
+
+.experiment-label {
+  left: 900px;
+  top: 1160px;
+}
+
+
+/* -------------------------
+   SYSTEM BOUNDARIES
+------------------------- */
+
+.system-boundary {
+  position: absolute;
+
+  border: 1.5px dashed #aaa;
+
+  border-radius: 18px;
+
+  pointer-events: none;
+}
+
+.context-boundary {
+  left: 70px;
+  top: 250px;
+
+  width: 1160px;
+  height: 250px;
+}
+
+.fraud-boundary {
+  left: 70px;
+  top: 730px;
+
+  width: 1160px;
+  height: 390px;
+}
+
+.boundary-title {
+  position: absolute;
+
+  top: -12px;
+  left: 20px;
+
+  padding: 0 8px;
+
+  background: #f7f7f7;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #777;
+}
+
+
+/* -------------------------
+   NODES
+------------------------- */
+
+.node {
+  position: absolute;
+
+  min-width: 190px;
+
+  padding: 14px 16px;
+
+  background: white;
+
+  border: 1px solid #d8d8d8;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 2px 5px rgba(0,0,0,0.05);
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  cursor: pointer;
+
+  z-index: 5;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.node:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.10);
+}
+
+.node strong {
+  display: block;
+  font-size: 14px;
+}
+
+.node span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: #888;
+}
+
+.node-icon {
+  font-size: 20px;
+}
+
+
+/* Node types */
+
+.actor {
+  border-color: #c9c9c9;
+}
+
+.system {
+  border-color: #8eb4e6;
+}
+
+.fraud {
+  border-color: #a99bd8;
+}
+
+.external {
+  border-color: #e3b96b;
+}
+
+
+/* -------------------------
+   CONTAINER NODES
+------------------------- */
+
+.container-node {
+  display: block;
+
+  width: 230px;
+
+  padding: 18px;
+
+  text-align: center;
+}
+
+.container-node strong {
+  font-size: 15px;
+}
+
+
+/* -------------------------
+   DECISIONS
+------------------------- */
+
+.decision {
+  min-width: 100px;
+
+  justify-content: center;
+
+  text-align: center;
+
+  display: block;
+}
+
+.approve {
+  border-color: #8bc9a4;
+}
+
+.review {
+  border-color: #e0c37a;
+}
+
+.reject {
+  border-color: #dc9999;
+}
+
+
+/* -------------------------
+   SIGNAL CARDS
+------------------------- */
+
+.signal-group {
+  position: absolute;
+
+  left: 80px;
+  top: 1210px;
+
+  display: flex;
+
+  gap: 16px;
+}
+
+.signal-card {
+  width: 150px;
+
+  padding: 16px;
+
+  background: white;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+}
+
+.signal-card strong {
+  display: block;
+}
+
+.signal-card span {
+  display: block;
+
+  margin-top: 5px;
+
+  font-size: 11px;
+
+  color: #888;
+}
+
+
+/* -------------------------
+   EXPERIMENT CARD
+------------------------- */
+
+.note-card {
+  position: absolute;
+
+  background: #fff8c9;
+
+  border: 1px solid #e8dc8e;
+
+  box-shadow:
+    2px 4px 12px rgba(0,0,0,0.08);
+
+  border-radius: 4px;
+}
+
+.experiment-card {
+  left: 900px;
+  top: 1210px;
+
+  width: 420px;
+
+  padding: 26px;
+}
+
+.note-pin {
+  position: absolute;
+
+  top: -8px;
+  left: 50%;
+
+  width: 14px;
+  height: 14px;
+
+  border-radius: 50%;
+
+  background: #e4b54f;
+
+  transform: translateX(-50%);
+}
+
+.experiment-card h3 {
+  margin: 12px 0 10px;
+
+  font-size: 20px;
+}
+
+.experiment-card p {
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.metric-row {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+.metric-row div {
+  padding: 10px;
+
+  background: rgba(255,255,255,0.6);
+
+  border-radius: 5px;
+}
+
+.metric-row span {
+  display: block;
+
+  font-size: 10px;
+}
+
+.metric-row strong {
+  display: block;
+
+  margin-top: 4px;
+
+  font-size: 18px;
+}
+
+
+/* -------------------------
+   SVG CONNECTIONS
+------------------------- */
+
+.connections {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+.connections line {
+  stroke: #999;
+  stroke-width: 2;
+  fill: none;
+}
+
+
+/* -------------------------
+   INFO PANEL
+------------------------- */
+
+.info-panel {
+  position: fixed;
+
+  right: 24px;
+  bottom: 24px;
+
+  width: 300px;
+
+  padding: 24px;
+
+  background: white;
+
+  border: 1px solid #ddd;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,0.12);
+
+  z-index: 200;
+
+  display: none;
+}
+
+.info-panel.visible {
+  display: block;
+}
+
+.info-panel h3 {
+  margin: 8px 0;
+
+  font-size: 20px;
+}
+
+.info-panel p {
+  color: #666;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.close-panel {
+  position: absolute;
+
+  right: 12px;
+  top: 12px;
+
+  border: 0;
+  background: transparent;
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
