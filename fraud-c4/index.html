@@ -273,7 +273,7 @@
       <section class="frame frame-signals" id="frame-signals">
         <span class="frame-tab">Reference &middot; Risk Signal Taxonomy</span>
         <div class="signal-grid">
-          <div class="signal-card">
+          <div class="signal-card" id="sig-device" tabindex="0" role="button" aria-haspopup="dialog">
             <span class="signal-title">Device</span>
             <div class="tag-row">
               <span class="tag">Device fingerprint</span>
@@ -281,7 +281,7 @@
               <span class="tag">IP reputation</span>
             </div>
           </div>
-          <div class="signal-card">
+          <div class="signal-card" id="sig-account" tabindex="0" role="button" aria-haspopup="dialog">
             <span class="signal-title">Account</span>
             <div class="tag-row">
               <span class="tag">Account age</span>
@@ -289,7 +289,7 @@
               <span class="tag">Prior chargebacks</span>
             </div>
           </div>
-          <div class="signal-card">
+          <div class="signal-card" id="sig-payment" tabindex="0" role="button" aria-haspopup="dialog">
             <span class="signal-title">Payment</span>
             <div class="tag-row">
               <span class="tag">BIN risk</span>
@@ -297,7 +297,7 @@
               <span class="tag">Card velocity</span>
             </div>
           </div>
-          <div class="signal-card">
+          <div class="signal-card" id="sig-behavior" tabindex="0" role="button" aria-haspopup="dialog">
             <span class="signal-title">Behavior</span>
             <div class="tag-row">
               <span class="tag">Session pattern</span>
@@ -305,7 +305,7 @@
               <span class="tag">Copy/paste at checkout</span>
             </div>
           </div>
-          <div class="signal-card">
+          <div class="signal-card" id="sig-order" tabindex="0" role="button" aria-haspopup="dialog">
             <span class="signal-title">Order</span>
             <div class="tag-row">
               <span class="tag">Basket value</span>
@@ -323,8 +323,8 @@
         <span class="frame-tab">Product Experiment</span>
         <div class="sticky-note">
           <span class="sticky-eyebrow">Hypothesis</span>
-          <h3 class="sticky-title">Device fingerprinting will improve fraud detection</h3>
-          <p class="sticky-body">Adding device-level signals to the Decision Engine will reduce fraudulent orders without materially reducing legitimate customer conversion.</p>
+          <h3 class="sticky-title">Device fingerprinting will cut fraud without hurting conversion</h3>
+          <p class="sticky-body">If we add device-level signals to the Decision Engine, we should catch more fraudulent orders while leaving legitimate customers mostly unaffected. Worth a real A/B test before rolling it out broadly.</p>
           <div class="sticky-metrics">
             <span class="metric metric-down">Fraud loss <b>&darr;</b></span>
             <span class="metric metric-down">False positives <b>&darr;</b></span>
