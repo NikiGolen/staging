@@ -1,6 +1,3 @@
-/* ==========================================================================
-   TOKENS
-   ========================================================================== */
 :root{
   --canvas-bg:      #FAFAF8;
   --dot-color:      #DEDEDA;
@@ -46,9 +43,6 @@
   --sidebar-w: 220px;
 }
 
-/* ==========================================================================
-   RESET
-   ========================================================================== */
 *, *::before, *::after{ box-sizing: border-box; }
 html, body{ height: 100%; }
 body{
@@ -64,9 +58,6 @@ a{ color: inherit; }
 ul{ list-style: none; margin: 0; padding: 0; }
 :focus-visible{ outline: 2px solid var(--c-system); outline-offset: 2px; }
 
-/* ==========================================================================
-   TOP BAR
-   ========================================================================== */
 .topbar{
   height: var(--topbar-h);
   display: flex;
@@ -142,18 +133,12 @@ ul{ list-style: none; margin: 0; padding: 0; }
 .legend-toggle:hover{ border-color: var(--c-system); }
 .legend-toggle.is-active{ background: var(--ink); color: #fff; border-color: var(--ink); }
 
-/* ==========================================================================
-   SHELL / LAYOUT
-   ========================================================================== */
 .board-shell{
   position: relative;
   height: calc(100vh - var(--topbar-h));
   display: flex;
 }
 
-/* ==========================================================================
-   SIDEBAR
-   ========================================================================== */
 .sidebar{
   width: var(--sidebar-w);
   flex-shrink: 0;
@@ -206,9 +191,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
   padding: 0 8px;
 }
 
-/* ==========================================================================
-   CANVAS
-   ========================================================================== */
 .canvas-viewport{
   position: relative;
   flex: 1;
@@ -237,9 +219,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
   will-change: transform;
 }
 
-/* ==========================================================================
-   FRAMES  (Miro-style: bordered region + black tab label)
-   ========================================================================== */
 .frame{
   position: relative;
   background: rgba(255,255,255,.35);
@@ -288,9 +267,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
   fill: var(--canvas-bg);
 }
 
-/* ==========================================================================
-   NODES (cards)
-   ========================================================================== */
 .node{
   position: absolute;
   display: flex;
@@ -357,9 +333,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
 .node-outcome-review{  background: #FCF1D8; color: #8A5F00; border: 1.5px solid var(--warn); }
 .node-outcome-reject{  background: #FBE6E6; color: #9C2B2B; border: 1.5px solid var(--danger); }
 
-/* ==========================================================================
-   PROCESS VIEW — SWIMLANES
-   ========================================================================== */
 .frame-process{
   width: 1300px;
   padding: 30px 30px 30px 0;
@@ -444,9 +417,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
 .branch-review{  background: #FCF1D8; color: #8A5F00; border: 1.5px solid var(--warn); }
 .branch-reject{  background: #FBE6E6; color: #9C2B2B; border: 1.5px solid var(--danger); }
 
-/* ==========================================================================
-   RISK SIGNAL TAXONOMY
-   ========================================================================== */
 .frame-signals{
   width: 1300px;
   padding: 40px 30px 30px;
@@ -462,6 +432,13 @@ ul{ list-style: none; margin: 0; padding: 0; }
   border-radius: var(--radius-card);
   padding: 16px;
   box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+}
+.signal-card:hover, .signal-card:focus-visible{
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+  border-color: var(--c-system);
 }
 .signal-title{
   display: block;
@@ -480,9 +457,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
   color: var(--ink-soft);
 }
 
-/* ==========================================================================
-   EXPERIMENT — STICKY NOTE
-   ========================================================================== */
 .frame-experiment{
   width: 480px;
   border: none;
@@ -524,9 +498,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
   padding: 5px 10px;
 }
 
-/* ==========================================================================
-   ZOOM CONTROLS
-   ========================================================================== */
 .zoom-controls{
   position: absolute;
   right: 24px;
@@ -572,9 +543,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
   border-radius: 0 !important;
 }
 
-/* ==========================================================================
-   LEGEND PANEL
-   ========================================================================== */
 .legend-panel{
   position: absolute;
   top: 16px;
@@ -616,9 +584,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
 .swatch-component{ background: var(--c-component); }
 .swatch-focal{ background: var(--surface); box-shadow: 0 0 0 2px var(--accent); }
 
-/* ==========================================================================
-   DETAIL PANEL (side drawer)
-   ========================================================================== */
 .detail-panel{
   position: absolute;
   top: 0;
@@ -685,9 +650,6 @@ ul{ list-style: none; margin: 0; padding: 0; }
   background: var(--c-system);
 }
 
-/* ==========================================================================
-   RESPONSIVE
-   ========================================================================== */
 @media (max-width: 860px){
   :root{ --sidebar-w: 0px; }
   .sidebar{ display: none; }
