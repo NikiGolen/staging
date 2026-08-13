@@ -7,61 +7,61 @@ const DETAILS = {
   "c1-customer": {
     kind: "Person",
     title: "Customer",
-    summary: "The shopper placing an order on the ecommerce platform. Every fraud signal ultimately traces back to their session, device, and payment method.",
+    summary: "The person checking out. Everything the system knows about risk starts with them: their device, their session, how they're paying.",
     points: [
-      "Interacts only with the Ecommerce Platform — never touches Fraud Decisioning directly.",
-      "Experience risk: any added friction (extra verification, holds) directly affects conversion.",
-      "Source of the raw behavioral and device signals fed into scoring."
+      "Only talks to the Ecommerce Platform. Never touches Fraud Decisioning directly.",
+      "Any friction we add here (extra verification, a hold on the order) costs us conversion, so it can't be free.",
+      "The raw material for every signal downstream comes from this one interaction."
     ]
   },
   "c1-ecommerce": {
     kind: "Software System",
     title: "Ecommerce Platform",
-    summary: "The storefront, cart, and checkout experience. Owns the customer relationship and calls Fraud Decisioning synchronously before confirming an order.",
+    summary: "The storefront and checkout flow. It owns the customer relationship and calls Fraud Decisioning before it'll confirm an order.",
     points: [
-      "Sends order context (cart, device, session) to Fraud Decisioning at checkout.",
-      "Must handle three outcomes: approve, silently review, or block.",
-      "Latency budget here is tight — scoring has to return in the checkout critical path."
+      "Passes along cart, device, and session context at checkout.",
+      "Has to handle three different outcomes gracefully: approve, quietly hold for review, or block.",
+      "This call happens in the checkout path, so scoring needs to come back fast."
     ]
   },
   "c1-fraud": {
-    kind: "Software System — in scope for this role",
+    kind: "Software System · in scope for this role",
     title: "Fraud Decisioning",
-    summary: "Scores every order in real time and routes it to approve, review, or reject. This is the system a Digital Fraud PM would own end to end.",
+    summary: "Scores every order and decides whether it goes through, gets reviewed, or gets blocked. This is the system a Digital Fraud PM would actually own.",
     points: [
-      "Balances two competing product goals: minimize fraud loss, minimize false declines.",
-      "Consumes signals from the platform and payment provider; produces a decision and a reason.",
-      "Feeds a human-in-the-loop review queue for ambiguous cases."
+      "Always pulling in two directions: catch more fraud, but don't punish good customers for looking suspicious.",
+      "Takes in signals from the platform and the payment provider, and outputs a decision plus a reason for it.",
+      "Anything it can't decide confidently gets handed to a person."
     ]
   },
   "c1-payment": {
     kind: "External System",
     title: "Payment Provider",
-    summary: "Third-party processor handling authorization, AVS/CVV checks, and chargeback notifications.",
+    summary: "The third-party processor. Handles authorization, AVS/CVV checks, and lets us know when a chargeback comes in.",
     points: [
-      "Fraud Decisioning queries it for payment-specific risk signals.",
-      "Chargeback data flowing back is a key label source for model retraining.",
-      "Outside the team's build scope — integration only."
+      "Fraud Decisioning calls out to it for payment-specific signals.",
+      "Chargebacks that come back later are some of the best training data we get.",
+      "We integrate with it, we don't build it."
     ]
   },
   "c1-order": {
     kind: "Software System",
     title: "Order Management",
-    summary: "Owns fulfillment and the order lifecycle once a decision has been made.",
+    summary: "Takes over once a decision has been made and runs fulfillment.",
     points: [
-      "Receives the final decision and either releases or holds fulfillment.",
-      "Reversing a decision after this point is expensive — a shipped order can't be un-shipped.",
-      "A natural place to measure downstream cost of false positives."
+      "Gets the final call and either ships the order or holds it.",
+      "Once something's shipped, a bad decision is expensive to undo.",
+      "A good place to actually measure what false positives cost us."
     ]
   },
   "c1-analyst": {
     kind: "Person",
     title: "Fraud Ops Analyst",
-    summary: "Internal team member who manually resolves orders the system can't confidently decide on its own.",
+    summary: "The person who steps in when the system can't confidently make the call on its own.",
     points: [
-      "Works the Case Queue through the Fraud Ops Console.",
-      "Their overrides are valuable labeled data for improving the model.",
-      "Review capacity is a hard constraint on how aggressive the 'review' threshold can be."
+      "Works cases out of the queue through the Fraud Ops Console.",
+      "Every override they make is basically free labeled data for the model.",
+      "How aggressive we can set the 'review' threshold is limited by how many people we have to actually review cases."
     ]
   },
 
@@ -69,145 +69,197 @@ const DETAILS = {
   "c2-signal": {
     kind: "Container",
     title: "Signal Collection",
-    summary: "Ingests raw events from the platform — device, session, and behavioral data — as soon as checkout begins.",
+    summary: "Grabs raw events off the platform, device, session, behavior, the moment checkout starts.",
     points: [
-      "Needs to be low-latency and resilient; it's on the critical checkout path.",
-      "Normalizes inconsistent event schemas from web and app clients.",
-      "Feeds the Feature Store rather than scoring directly."
+      "Sits on the checkout path, so it has to be fast and it has to not fall over.",
+      "Cleans up event data that comes in differently from web vs. the app.",
+      "Feeds the Feature Store, doesn't talk to scoring directly."
     ]
   },
   "c2-feature": {
     kind: "Container",
     title: "Feature Store",
-    summary: "Combines real-time signals with historical account and device history into model-ready features.",
+    summary: "Blends what just happened with what we already know about the account and device into something the model can actually use.",
     points: [
-      "Serves both real-time scoring and offline model training from one source of truth.",
-      "Feature drift here is a common, quiet cause of model performance decay.",
-      "A key place product would define what data is even allowed to be used."
+      "One source of truth for both live scoring and model training, which keeps them from drifting apart.",
+      "When the model quietly gets worse over time, this is usually where to look first.",
+      "Product should have a say in what data is even fair game to use here."
     ]
   },
   "c2-scoring": {
     kind: "Container",
     title: "Risk Scoring Service",
-    summary: "Runs the ML model that turns features into a single risk score per order.",
+    summary: "Runs the model and turns features into a single risk score for the order.",
     points: [
-      "Model output is a probability, not a decision — routing logic lives in the Decision Engine.",
-      "Needs shadow-mode deployment support to test new model versions safely.",
-      "Score calibration directly determines review queue volume."
+      "Outputs a probability, not a decision. Routing lives downstream in the Decision Engine.",
+      "Needs to support shadow deployments so a new model version can be tested without affecting real orders.",
+      "How well this is calibrated basically sets the size of the review queue."
     ]
   },
   "c2-decision": {
-    kind: "Container — in scope",
+    kind: "Container · in scope",
     title: "Decision Engine",
-    summary: "Applies rules and score thresholds to route each order to approve, review, or reject.",
+    summary: "Takes the score, runs it through rules and thresholds, and decides: approve, review, or reject.",
     points: [
-      "Where product-defined risk tolerance actually gets encoded.",
-      "Thresholds should be tunable per segment (e.g. new accounts vs. returning customers).",
-      "Every decision needs a reason code for audit and explainability."
+      "This is where risk tolerance stops being a philosophy and becomes actual configuration.",
+      "Thresholds should flex by segment, a brand-new account isn't the same bet as a five-year customer.",
+      "Every decision needs a reason attached, or nobody downstream can trust it."
     ]
   },
   "c2-queue": {
     kind: "Container",
     title: "Case Queue",
-    summary: "Holds orders routed to manual review, prioritized by risk and order value.",
+    summary: "Where orders sit once they've been flagged for a human to look at, roughly sorted by risk and value.",
     points: [
-      "Queue depth is a leading indicator of whether thresholds are too conservative.",
-      "SLA on review time directly affects customer-perceived delivery speed.",
-      "Prioritization logic is itself a product decision, not just an engineering one."
+      "If this queue keeps growing, it's usually a sign the thresholds are set too cautiously.",
+      "How fast we clear it affects how fast customers actually get their orders.",
+      "Deciding what gets prioritized first is a product call, not just an engineering one."
     ]
   },
   "c2-console": {
     kind: "Container",
     title: "Fraud Ops Console",
-    summary: "The internal tool analysts use to investigate and resolve queued cases.",
+    summary: "The internal tool analysts actually work in to investigate and close out cases.",
     points: [
-      "Surfaces reason codes and evidence so analysts can decide quickly and consistently.",
-      "Analyst decisions loop back as training labels for the scoring model.",
-      "Console usability directly drives review throughput and analyst headcount needs."
+      "Needs to surface reason codes and evidence clearly, or analysts end up guessing.",
+      "Every decision an analyst makes here becomes a training label later.",
+      "If the console is clunky, you need more analysts to get through the same volume."
     ]
   },
   "c2-approve": {
     kind: "Outcome",
     title: "Approve",
-    summary: "Low-risk orders proceed straight to Order Management with no added friction.",
-    points: ["The default, high-volume path.", "Optimizing this path's precision protects conversion."]
+    summary: "Low-risk orders go straight through to Order Management. No extra steps.",
+    points: ["This is the path most orders should take.", "Getting this precise is what protects conversion."]
   },
   "c2-review": {
     kind: "Outcome",
     title: "Review",
-    summary: "Medium-risk orders are held and routed to the Case Queue for a human decision.",
-    points: ["Volume here is capacity-constrained by analyst headcount.", "The main lever product has to trade fraud loss against operating cost."]
+    summary: "Medium-risk orders get held and sent to the Case Queue for a person to decide.",
+    points: ["Limited by how many analysts we actually have.", "The main dial for trading fraud loss against operating cost."]
   },
   "c2-reject": {
     kind: "Outcome",
     title: "Reject",
-    summary: "High-risk orders are blocked automatically before fulfillment.",
-    points: ["False positives here are the most customer-visible failure mode.", "Should always emit a clear, appealable reason to the customer."]
+    summary: "High-risk orders get blocked automatically before they reach fulfillment.",
+    points: ["A false positive here is the most visible way to upset a real customer.", "Should always come with a reason the customer can actually appeal."]
   },
 
   // ---------- C3 Component (Decision Engine) ----------
   "c3-rules": {
     kind: "Component",
     title: "Rule Evaluator",
-    summary: "Applies deterministic, human-written fraud rules ahead of or alongside the model score.",
+    summary: "Runs the hand-written fraud rules, either before the model score or alongside it.",
     points: [
-      "Good for known fraud patterns that don't need a model — e.g. hard blocklists.",
-      "Rules need versioning and rollback since they ship faster than model updates.",
-      "Over-reliance on rules is a common anti-pattern that hides in plain sight."
+      "Handy for known patterns you don't need a model to catch, like a hard blocklist.",
+      "Rules ship faster than model updates, so they need their own versioning and a way to roll back.",
+      "Leaning on rules too heavily is an easy trap to fall into without noticing."
     ]
   },
   "c3-threshold": {
     kind: "Component",
     title: "Threshold Manager",
-    summary: "Maps risk scores to approve/review/reject cutoffs, configurable by segment.",
+    summary: "Maps a risk score to a cutoff, approve, review, or reject, and lets that vary by segment.",
     points: [
-      "The most direct lever for product to tune fraud-vs-friction trade-offs.",
-      "Should support experimentation — different thresholds for different cohorts.",
-      "Changes here need a fast feedback loop to see downstream impact."
+      "The most direct dial product has for balancing fraud against friction.",
+      "Should be built for experimentation, different cohorts probably need different cutoffs.",
+      "Whatever gets changed here needs a fast way to see what it actually did downstream."
     ]
   },
   "c3-mladapter": {
     kind: "Component",
     title: "ML Score Adapter",
-    summary: "Calls the Risk Scoring Service and normalizes its output for the rest of the engine.",
+    summary: "Calls the Risk Scoring Service and cleans up its response for the rest of the engine.",
     points: [
-      "Isolates the Decision Engine from model versioning and API changes.",
-      "Handles fallback behavior if the scoring service is slow or unavailable.",
-      "A clean seam for running shadow models without affecting live decisions."
+      "Keeps the Decision Engine from caring about model versioning or API changes.",
+      "Handles what happens if scoring is slow or just down.",
+      "A clean spot to run a shadow model without it touching live decisions."
     ]
   },
   "c3-explain": {
     kind: "Component",
     title: "Explainability Service",
-    summary: "Generates human-readable reason codes for every decision the engine makes.",
+    summary: "Turns each decision into a reason a person could actually read and understand.",
     points: [
-      "Powers both the analyst console and any customer-facing decline messaging.",
-      "Often a compliance requirement, not just a UX nicety.",
-      "A model that can't explain itself is hard to trust operationally."
+      "Feeds both the analyst console and anything we tell the customer when we decline them.",
+      "Often required for compliance, not just nice for UX.",
+      "A system that can't explain its own decisions is hard to trust day to day."
     ]
   },
   "c3-audit": {
     kind: "Component",
     title: "Audit Logger",
-    summary: "Writes an immutable record of every decision, score, and rule that fired.",
+    summary: "Keeps a permanent record of every decision, score, and rule that fired along the way.",
     points: [
-      "Required for dispute resolution and regulatory review.",
-      "Also the raw material for measuring model and policy performance over time.",
-      "Should log the 'why', not just the 'what'."
+      "Needed for disputes and for anyone auditing the process later.",
+      "Also the raw material for measuring how the policy is actually performing over time.",
+      "Should capture why a decision happened, not just what the decision was."
     ]
   },
 
   // ---------- Process view ----------
-  "p-place": { kind: "Process step", title: "Places order", summary: "Customer completes checkout on the ecommerce platform.", points: ["Trigger for the entire fraud decisioning flow."] },
-  "p-submit": { kind: "Process step", title: "Submits order for scoring", summary: "The platform calls Fraud Decisioning synchronously before confirming the order.", points: ["This call sits in the checkout critical path — latency matters."] },
-  "p-collect": { kind: "Process step", title: "Collects signals", summary: "Device, account, payment, and behavioral signals are gathered for this order.", points: ["Handled by the Signal Collection and Feature Store containers."] },
-  "p-score": { kind: "Process step", title: "Scores risk", summary: "The Risk Scoring Service returns a probability of fraud for this order.", points: ["A score, not a decision — routing happens next."] },
-  "p-route": { kind: "Process step", title: "Routes decision", summary: "The Decision Engine applies rules and thresholds to pick approve, review, or reject.", points: ["The single place product-defined risk tolerance is enforced."] },
-  "p-approve": { kind: "Branch outcome", title: "Approve", summary: "Order proceeds to fulfillment with no added friction.", points: ["The majority of orders should land here."] },
-  "p-review": { kind: "Branch outcome", title: "Review", summary: "Order is held and placed in the Case Queue for manual resolution.", points: ["Bounded by analyst capacity."] },
-  "p-reject": { kind: "Branch outcome", title: "Reject", summary: "Order is blocked automatically before it reaches fulfillment.", points: ["Should come with a clear, appealable reason."] },
-  "p-analyst": { kind: "Process step", title: "Resolves reviewed cases", summary: "An analyst investigates queued orders in the Fraud Ops Console and makes the final call.", points: ["Their decisions become training data for future model versions."] },
-  "p-fulfill": { kind: "Process step", title: "Fulfills or cancels order", summary: "Order Management acts on the final decision.", points: ["The last point at which a wrong decision is still cheap to reverse."] }
+  "p-place": { kind: "Process step", title: "Places order", summary: "The customer finishes checkout on the platform.", points: ["This is what kicks off the whole fraud decisioning flow."] },
+  "p-submit": { kind: "Process step", title: "Submits order for scoring", summary: "The platform calls Fraud Decisioning before it'll confirm the order.", points: ["Happens inside the checkout flow, so speed matters here."] },
+  "p-collect": { kind: "Process step", title: "Collects signals", summary: "Device, account, payment, and behavior signals get pulled together for this order.", points: ["Handled by Signal Collection and the Feature Store."] },
+  "p-score": { kind: "Process step", title: "Scores risk", summary: "The Risk Scoring Service returns a fraud probability for the order.", points: ["Just a score at this point, routing happens next."] },
+  "p-route": { kind: "Process step", title: "Routes decision", summary: "The Decision Engine runs the score through rules and thresholds and picks a path.", points: ["The one place where risk tolerance actually gets enforced."] },
+  "p-approve": { kind: "Branch outcome", title: "Approve", summary: "The order moves on to fulfillment, no extra friction.", points: ["Where most orders should end up."] },
+  "p-review": { kind: "Branch outcome", title: "Review", summary: "The order gets held and sent to the Case Queue for a person to decide.", points: ["Limited by how many analysts are available."] },
+  "p-reject": { kind: "Branch outcome", title: "Reject", summary: "The order gets blocked before it ever reaches fulfillment.", points: ["Should come with a reason the customer can appeal."] },
+  "p-analyst": { kind: "Process step", title: "Resolves reviewed cases", summary: "An analyst looks into queued orders in the console and makes the call.", points: ["Their decisions become training data for the next model version."] },
+  "p-fulfill": { kind: "Process step", title: "Fulfills or cancels order", summary: "Order Management acts on whatever the final decision was.", points: ["The last point where a wrong call is still cheap to fix."] },
+
+  // ---------- Risk signal taxonomy ----------
+  "sig-device": {
+    kind: "Reference · Risk Signals",
+    title: "Device",
+    summary: "What we can tell about the hardware and connection placing the order, separate from who's logged in.",
+    points: [
+      "Device fingerprint: a rough identity for the device itself, useful for spotting repeat offenders across accounts.",
+      "Emulator detection: catches automated or spoofed environments that don't behave like a real phone or browser.",
+      "IP reputation: flags addresses tied to known abuse, VPNs, or proxies worth a second look."
+    ]
+  },
+  "sig-account": {
+    kind: "Reference · Risk Signals",
+    title: "Account",
+    summary: "History and behavior tied to the account itself.",
+    points: [
+      "Account age: brand-new accounts carry more risk than ones with a track record.",
+      "Login velocity: a lot of logins in a short window can mean credential stuffing.",
+      "Prior chargebacks: past disputes are one of the strongest predictors we have."
+    ]
+  },
+  "sig-payment": {
+    kind: "Reference · Risk Signals",
+    title: "Payment",
+    summary: "Signals about the payment method itself.",
+    points: [
+      "BIN risk: some card ranges just see more fraud than others.",
+      "AVS / CVV match: whether the billing details actually line up with what the bank has on file.",
+      "Card velocity: the same card getting used across many accounts or orders fast."
+    ]
+  },
+  "sig-behavior": {
+    kind: "Reference · Risk Signals",
+    title: "Behavior",
+    summary: "How someone moves through checkout, which is surprisingly hard to fake convincingly.",
+    points: [
+      "Session pattern: mouse movement, navigation, timing that looks scripted rather than human.",
+      "Time on site: fraud sessions tend to move unnaturally fast through checkout.",
+      "Copy/paste at checkout: often just how people fill forms, but combined with other signals it can matter."
+    ]
+  },
+  "sig-order": {
+    kind: "Reference · Risk Signals",
+    title: "Order",
+    summary: "What's actually in the cart and where it's going.",
+    points: [
+      "Basket value: unusually high-value orders warrant a closer look.",
+      "Ship/bill mismatch: shipping and billing addresses in different places isn't automatically suspicious, but it raises the odds.",
+      "High-resale items: electronics and gift cards are disproportionately targeted because they're easy to flip."
+    ]
+  }
 };
 
 /* ============================================================
@@ -442,7 +494,7 @@ function closeDetail(){
 document.getElementById("detailClose").addEventListener("click", closeDetail);
 
 document.querySelectorAll("[id]").forEach((el) => {
-  if (DETAILS[el.id] && (el.classList.contains("node") || el.classList.contains("step-card") || el.classList.contains("branch"))){
+  if (DETAILS[el.id] && (el.classList.contains("node") || el.classList.contains("step-card") || el.classList.contains("branch") || el.classList.contains("signal-card"))){
     el.addEventListener("click", () => openDetail(el.id));
     el.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " "){
